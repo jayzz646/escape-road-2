@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Escape Road 3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>ESCAPE ROAD 3</h1>
+        <p>Loading game...</p>
+    </header>
+
+    <main>
+        <div id="game-container">
+            <div id="loading">
+                <h2>Loading Escape Road 3</h2>
+                <p id="status">Preparing Unity...</p>
+                <div class="progress">
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+
+            <canvas id="game"></canvas>
+        </div>
+    </main>
+
+    <script>
+        const buildPath = "Build/";
+        const gameName = "escape-road-3-v26041006";
+
+        const canvas = document.getElementById("game");
+        const status = document.getElementById("status");
+        const bar = document.getElementById("progress-bar");
+        const loading = document.getElementById("loading");
+
+        const script = document.createElement("script");
+        script.src = buildPath + gameName + ".loader.js";
+
+        script.onload = function () {
+            const config = {
+                dataUrl: buildPath + gameName + ".data",
+                frameworkUrl: buildPath + gameName + ".framework.js",
+                codeUrl: buildPath + gameName + ".wasm",
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "Game",
+                productName: "Escape Road 3",
+                productVersion: "1.0"
+            };
+
+            createUnityInstance(canvas, config, function (progress) {
+                bar.style.width = (progress * 100) + "%";
+                status.textContent =
+                    "Loading: " + Math.round(progress * 100) + "%";
+            }).then(function () {
+                loading.style.display = "none";
+            }).catch(function (error) {
+                status.textContent = "Unity error: " + error;
+            });
+        };
+
+        script.onerror = function () {
+            status.textContent =
+                "Could not load Unity loader. Check your Build folder.";
+        };
+
+        document.body.appendChild(script);
+    </script>
+
+</body>
+</html>
